@@ -17,3 +17,6 @@ Apache 2
 
 # Development
 Development done for free to help support continued learning due to distruption by the corona virus.  26LLC supported.
+
+# TODO
+Show the active alignment on caret location.  The logic is in for this but currently disabled as I haven't tested it.
