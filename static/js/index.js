@@ -3,6 +3,8 @@ var _, $, jQuery;
 var $ = require('ep_etherpad-lite/static/js/rjquery').$;
 var _ = require('ep_etherpad-lite/static/js/underscore');
 
+var api = require('./api');
+
 // All our tags are block elements, so we just return them.
 var tags = ['left', 'center', 'justify', 'right'];
 exports.aceRegisterBlockElements = function(){
@@ -11,6 +13,8 @@ exports.aceRegisterBlockElements = function(){
 
 // Bind the event handler to the toolbar buttons
 exports.postAceInit = function(hook, context){
+  api.init(context.ace);
+
   $('body').on('click', '.ep_align', function(){
     var value = $(this).data("align");
     var intValue = parseInt(value,10);
@@ -60,6 +64,8 @@ exports.aceEditEvent = function(hook, call, cb){
       if(attr.count === totalNumberOfLines){
         // show as active class
         var ind = tags.indexOf(k);
+        var msg = ind > -1 ? k : '';
+        api.triggerTextAlignmentChanged(msg);
         // $("#align-selection").val(ind); // TODO commnented this out
       }
     });
@@ -98,6 +104,9 @@ exports.aceDomLineProcessLineAttributes = function(name, context){
 // Passing a level >= 0 will set a alignment on the selected lines, level < 0 
 // will remove it
 function doInsertAlign(level){
+  if(typeof level === 'string' || level instanceof String)
+    level = tags.indexOf(level)
+
   var rep = this.rep,
     documentAttributeManager = this.documentAttributeManager;
   if (!(rep.selStart && rep.selEnd) || (level >= 0 && tags[level] === undefined))
