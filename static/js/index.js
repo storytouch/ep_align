@@ -4,13 +4,10 @@ var $ = require('ep_etherpad-lite/static/js/rjquery').$;
 var _ = require('ep_etherpad-lite/static/js/underscore');
 
 var api = require('./api');
-var utils = require('./utils');
+var padType = require('./padType');
 
 // All our tags are block elements, so we just return them.
 var tags = ['left', 'center', 'justify', 'right'];
-
-var PAD_TYPE_URL_PARAM = 'padType';
-var SCRIPT_DOCUMENT_TYPE = 'ScriptDocument';
 
 exports.aceRegisterBlockElements = function(){
   return tags;
@@ -34,8 +31,7 @@ exports.postAceInit = function(hook, context){
 // On caret position change show the current align
 exports.aceEditEvent = function(hook, call, cb){
   // If the pad is a ScriptDocument then do nothing..
-  var padType = utils.getParam(PAD_TYPE_URL_PARAM);
-  if (padType === SCRIPT_DOCUMENT_TYPE) return false;
+  if (padType.isScriptDocumentPad()) return false;
 
   // If it's not a click or a key event and the text hasn't changed then do nothing
   var cs = call.callstack;
