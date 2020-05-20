@@ -1,4 +1,4 @@
-describe("Alignment of Text", function(){
+describe("ep_align - Alignment of Text", function(){
 
   //create a new pad before each test run
   beforeEach(function(cb){
