@@ -2,6 +2,11 @@ describe("ep_align - Alignment of Text", function(){
 
   //create a new pad before each test run
   beforeEach(function(cb){
+    var epSEUtils = ep_script_elements_test_helper.utils;
+
+    // mock a non-ScriptDocument pad type
+    epSEUtils.setPadType('ANY_TYPE');
+
     helper.newPad(cb);
     this.timeout(60000);
   });
