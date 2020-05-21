@@ -5,9 +5,8 @@ describe("ep_align - Alignment of Text", function(){
     var epSEUtils = ep_script_elements_test_helper.utils;
 
     // mock a non-ScriptDocument pad type
-    epSEUtils.setPadType('ANY_TYPE');
-
-    helper.newPad(cb);
+    var padType = 'ANY_TYPE';
+    epSEUtils.newPadWithType(cb, padType);
     this.timeout(60000);
   });
 

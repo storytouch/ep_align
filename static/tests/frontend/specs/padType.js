@@ -66,20 +66,12 @@ describe('ep_align - pad type', function() {
 
 var ep_align_test_helper = ep_align_test_helper || {};
 ep_align_test_helper.padType = {
-  getPadTypeParamMocked: function(type) {
-    return function() {
-      return type;
-    };
-  },
   createPadWithType: function(padType, cb) {
     var self = this;
     var apiUtils = ep_align_test_helper.apiUtils;
     var epSEUtils = ep_script_elements_test_helper.utils;
 
-    // mock the pad type
-    epSEUtils.setPadType(padType);
-
-    helper.newPad(function() {
+    epSEUtils.newPadWithType(function() {
       // line needs to have some text on it
       apiUtils.startListeningToApiEvents();
 
@@ -89,7 +81,7 @@ ep_align_test_helper.padType = {
       }).done(cb);
 
       cb();
-    });
+    }, padType);
   },
   isMouseWindowVisible: function() {
     var outer$ = helper.padOuter$;
