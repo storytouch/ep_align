@@ -3,8 +3,9 @@ var _, $, jQuery;
 var $ = require('ep_etherpad-lite/static/js/rjquery').$;
 var _ = require('ep_etherpad-lite/static/js/underscore');
 
-var api = require('./api');
-var padType = require('./padType');
+var utils   = require('./utils');
+var api     = require('./api');
+var padType = require('ep_script_elements/static/js/padType');
 
 // All our tags are block elements, so we just return them.
 var tags = ['left', 'center', 'justify', 'right'];
@@ -15,6 +16,12 @@ exports.aceRegisterBlockElements = function(){
 
 // Bind the event handler to the toolbar buttons
 exports.postAceInit = function(hook, context){
+  var thisPlugin = utils.getPluginProps();
+
+  // If the pad is a ScriptDocument then do nothing..
+  //thisPlugin.padType = padType.init();
+  if (thisPlugin.padType.isScriptDocumentPad()) return false;
+
   api.init(context.ace);
 
   $('body').on('click', '.ep_align', function(){
@@ -30,8 +37,11 @@ exports.postAceInit = function(hook, context){
 
 // On caret position change show the current align
 exports.aceEditEvent = function(hook, call, cb){
+  var thisPlugin = utils.getPluginProps();
+
   // If the pad is a ScriptDocument then do nothing..
-  if (padType.isScriptDocumentPad()) return false;
+  thisPlugin.padType = padType.init();
+  if (thisPlugin.padType.isScriptDocumentPad()) return false;
 
   // If it's not a click or a key event and the text hasn't changed then do nothing
   var cs = call.callstack;

@@ -1,9 +1,15 @@
 describe('ep_align - API - chande text alignment', function() {
-  var helperFunctions, apiUtils;
+  var helperFunctions, apiUtils, utils, epSEUtils;
 
   before(function(done) {
+    utils = ep_align_test_helper.utils;
     helperFunctions = ep_align_test_helper.changeTextAlignment;
     apiUtils = ep_align_test_helper.apiUtils;
+    epSEUtils = ep_script_elements_test_helper.utils;
+
+    // mock a non-ScriptDocument pad type
+    epSEUtils.setPadType('ANY_TYPE');
+
     helper.newPad(function() {
       apiUtils.startListeningToApiEvents();
       done();
@@ -17,15 +23,15 @@ describe('ep_align - API - chande text alignment', function() {
 
     before(function(done) {
       alignment = 'center';
-      helperFunctions.selectLineAndApplyAlignment(lineNumber, alignment, done);
-      this.timeout(10000);
+      utils.selectLineAndApplyAlignment(lineNumber, alignment);
+      done();
     });
 
     context('and there is text selected', function() {
       it('applies the alignment on the selection', function(done) {
         helper
           .waitFor(function() {
-            return helperFunctions.checkIfHasAlignment(lineNumber, alignment);
+            return utils.checkIfHasAlignment(lineNumber, alignment);
           })
           .done(done);
       });
@@ -43,7 +49,7 @@ describe('ep_align - API - chande text alignment', function() {
         it('removes the alignment applied', function(done) {
           helper
             .waitFor(function() {
-              return !helperFunctions.checkIfHasAlignment(lineNumber, alignment);
+              return !utils.checkIfHasAlignment(lineNumber, alignment);
             })
             .done(done);
         });
@@ -61,7 +67,7 @@ describe('ep_align - API - chande text alignment', function() {
           it('displays the alignment previously applied', function(done) {
             helper
               .waitFor(function() {
-                return helperFunctions.checkIfHasAlignment(lineNumber, alignment);
+                return utils.checkIfHasAlignment(lineNumber, alignment);
               })
               .done(done);
           });
@@ -82,22 +88,5 @@ ep_align_test_helper.changeTextAlignment = {
   },
   redo: function() {
     ep_script_elements_test_helper.utils.redo();
-  },
-  checkIfHasAlignment: function(lineNumber, alignment) {
-    var $targetElement = helper.padInner$('div').eq(lineNumber);
-    var style = $targetElement.children().attr('style') || '';
-    return style.indexOf('text-align: ' + alignment) !== -1 || style.indexOf('text-align:' + alignment) !== -1;
-  },
-  selectLineAndApplyAlignment: function(lineNumber, alignment, cb) {
-    var self = this;
-    var apiUtils = ep_align_test_helper.apiUtils;
-    var $targetElement = helper.padInner$('div').eq(lineNumber);
-    helper.selectLines($targetElement, $targetElement);
-    apiUtils.simulateTriggerOfSetTextAlignment(alignment);
-    helper
-      .waitFor(function() {
-        return self.checkIfHasAlignment(lineNumber, alignment);
-      }, 4000)
-      .done(cb);
   },
 };
