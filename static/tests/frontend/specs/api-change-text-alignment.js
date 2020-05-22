@@ -8,12 +8,13 @@ describe('ep_align - API - chande text alignment', function() {
     epSEUtils = ep_script_elements_test_helper.utils;
 
     // mock a non-ScriptDocument pad type
-    epSEUtils.setPadType('ANY_TYPE');
+    var padType = 'ANY_TYPE';
 
-    helper.newPad(function() {
+    epSEUtils.newPadWithType(function() {
       apiUtils.startListeningToApiEvents();
       done();
-    });
+    }, padType);
+
     this.timeout(60000);
   });
 
