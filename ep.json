@@ -2,6 +2,7 @@
   "parts": [
     {
       "name": "main",
+      "pre": ["ep_script_elements/preLoader"],
       "client_hooks": {
         "aceEditEvent": "ep_align/static/js/index",
         "aceDomLineProcessLineAttributes": "ep_align/static/js/index",
