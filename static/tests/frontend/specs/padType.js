@@ -79,8 +79,6 @@ ep_align_test_helper.padType = {
         var lineNumber = helper.padInner$("div").length;
         return lineNumber === 1;
       }).done(cb);
-
-      cb();
     }, padType);
   },
   isMouseWindowVisible: function() {
