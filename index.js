@@ -11,7 +11,8 @@ exports.getLineHTMLForExport = function(hook, context) {
   var alignment = _analyzeLine(context.attribLine, context.apool);
   var lineContent = context.lineContent;
   if (alignment) {
-    context.lineContent = "<p style='text-align:" + alignment + "'>" + replaceGeneralTag(lineContent) + "</p>";
+    context.lineContent = `<align-${alignment}>${lineContent.substring(1)}</align-${alignment}>`;
+    context.lineAttribsProcessed = true;
   }
 };
 
@@ -25,10 +26,4 @@ function _analyzeLine(alineAttrs, apool) {
     }
   }
   return alignment;
-}
-
-function replaceGeneralTag(lineContent) {
-  lineContent = lineContent.replace(/<general>\*/, ''); // removes <general>*
-  lineContent = lineContent.replace(/<\/general>/, ''); // removes </general>
-  return lineContent;
 }
