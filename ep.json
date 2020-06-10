@@ -15,7 +15,12 @@
       "hooks": {
         "eejsBlock_editbarMenuLeft": "ep_align/index",
         "collectContentPre": "ep_align/static/js/shared",
-        "collectContentPost": "ep_align/static/js/shared",
+        "collectContentPost": "ep_align/static/js/shared"
+      }
+    },
+    {
+      "post": ["ep_script_elements/getLineHTMLForExport"],
+      "hooks": {
         "getLineHTMLForExport": "ep_align/index"
       }
     }
