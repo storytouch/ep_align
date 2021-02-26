@@ -75,10 +75,12 @@ ep_align_test_helper.padType = {
       // line needs to have some text on it
       apiUtils.startListeningToApiEvents();
 
-      helper.waitFor(function(){
-        var lineNumber = helper.padInner$("div").length;
-        return lineNumber === 1;
-      }).done(cb);
+      helper
+        .waitFor(function() {
+          var lineNumber = helper.padInner$('div').length;
+          return lineNumber === 1;
+        })
+        .done(cb);
     }, padType);
   },
   isMouseWindowVisible: function() {
