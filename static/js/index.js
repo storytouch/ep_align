@@ -3,7 +3,11 @@ var _, $, jQuery;
 var $ = require('ep_etherpad-lite/static/js/rjquery').$;
 var _ = require('ep_etherpad-lite/static/js/underscore');
 
+var alignmentOnNewLineHandler = require('./alignmentOnNewLineHandler');
 var api = require('./api');
+var utils = require('./utils');
+
+var pluginHasInitialized = false;
 
 // All our tags are block elements, so we just return them.
 var tags = ['left', 'center', 'justify', 'right'];
@@ -14,11 +18,11 @@ exports.aceRegisterBlockElements = function() {
 
 // Bind the event handler to the toolbar buttons
 exports.postAceInit = function(hook, context) {
-  // If the pad is a ScriptDocument then do nothing..
-  var isScriptDocumentPad = pad.plugins.ep_script_elements.padType.isScriptDocumentPad();
-  if (isScriptDocumentPad) return false;
+  if (!utils.isAlignmentEnabledOnThisPadType()) return;
 
-  api.init(context.ace);
+  var thisPlugin = utils.getPluginProps();
+  thisPlugin.api = api.init(context.ace);
+  thisPlugin.alignmentOnNewLineHandler = thisPlugin.alignmentOnNewLineHandlerBound();
 
   $('body').on('click', '.ep_align', function() {
     var value = $(this).data('align');
@@ -33,13 +37,13 @@ exports.postAceInit = function(hook, context) {
       );
     }
   });
+
+  pluginHasInitialized = true;
 };
 
 // On caret position change show the current align
 exports.aceEditEvent = function(hook, call, cb) {
-  // If the pad is a ScriptDocument then do nothing..
-  var isScriptDocumentPad = pad.plugins.ep_script_elements.padType.isScriptDocumentPad();
-  if (isScriptDocumentPad) return false;
+  if (!utils.isAlignmentEnabledOnThisPadType()) return;
 
   // If it's not a click or a key event and the text hasn't changed then do nothing
   var cs = call.callstack;
@@ -83,6 +87,15 @@ exports.aceEditEvent = function(hook, call, cb) {
       }
     });
   }, 250);
+};
+
+exports.aceKeyEvent = function(hook, context) {
+  if (!utils.isAlignmentEnabledOnThisPadType()) return;
+
+  if (pluginHasInitialized) {
+    var thisPlugin = utils.getPluginProps();
+    thisPlugin.alignmentOnNewLineHandler.processAceKeyEvent(context);
+  }
 };
 
 // Our align attribute will result in a heaading:left.... :left class
@@ -143,6 +156,11 @@ function doInsertAlign(level) {
 
 // Once ace is initialized, we set ace_doInsertAlign and bind it to the context
 exports.aceInitialized = function(hook, context) {
+  if (!utils.isAlignmentEnabledOnThisPadType()) return;
+
   var editorInfo = context.editorInfo;
   editorInfo.ace_doInsertAlign = _(doInsertAlign).bind(context);
+
+  var thisPlugin = utils.getPluginProps();
+  thisPlugin.alignmentOnNewLineHandlerBound = alignmentOnNewLineHandler.init.bind(context);
 };
