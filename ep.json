@@ -8,6 +8,7 @@
         "aceDomLineProcessLineAttributes": "ep_align/static/js/index",
         "aceEditEvent": "ep_align/static/js/index",
         "aceInitialized": "ep_align/static/js/index",
+        "aceKeyEvent": "ep_align/static/js/index",
         "aceRegisterBlockElements": "ep_align/static/js/index",
         "collectContentPre": "ep_align/static/js/shared",
         "postAceInit": "ep_align/static/js/index"
